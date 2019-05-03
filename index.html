@@ -103,12 +103,21 @@
         .y(d => d.y)
         .curve(d3.curveBasis);
 
+    // функция, создающая область
+    let area = d3.area()
+        .x(function(d) { return d.x; })
+        .y0(height - margin)
+        .y1(function(d) { return d.y; });
     // добавляем путь
-    let g = svg.append("g").append("path")
+    let g = svg.append("g");
+    g.append("path")
+        .attr("d", area(data))
+        .style("fill", "lightblue");
+
+    g.append("path")
         .attr("d", line(data))
         .style("stroke", "steelblue")
         .style("stroke-width", 2);
-
     // добавляем отметки к точкам
     svg.selectAll(".dot")
         .data(rawData)
