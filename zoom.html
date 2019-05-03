@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>d3</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+      svg path {
+        stroke: steelblue;
+        fill: none;
+        stroke-width: 2;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script type="text/javascript">
+    var width = 400,
+      height = 400;
+    // массив точек для создания пути
+    var data = [
+      { x: 80, y: 50 },
+      { x: 110, y: 80 },
+      { x: 140, y: 90 },
+      { x: 170, y: 70 },
+      { x: 200, y: 60 },
+      { x: 230, y: 60 },
+      { x: 260, y: 70 },
+      { x: 290, y: 80 },
+      { x: 320, y: 70 }
+    ];
+    // функция, создающая по массиву точек линии
+    var line = d3
+      .line()
+      .x(d => d.x)
+      .y(d => d.y)
+      .curve(d3.curveBasis);
+
+    var svg = d3.select('body').append('svg');
+
+    svg
+      .attr('height', height)
+      .attr('width', width)
+      .style('border', '1px solid red');
+
+    // добавляем путь
+    svg.append('path').attr('d', line(data));
+
+    const svgForm = document.querySelector('svg');
+
+    let scale = 1;
+    svgForm.addEventListener('wheel', e => {
+      e.preventDefault();
+      // cursor position in percent
+      const targetWidth = e.target.getBoundingClientRect().width;
+      const targetHeight = e.target.getBoundingClientRect().height;
+      let posX = (e.offsetX / targetWidth) * 100;
+      let posY = (e.offsetY / targetHeight) * 100;
+      // zoom object
+      if (e.deltaY < 0) {
+        scale += 0.05;
+      } else {
+        scale -= 0.05;
+      }
+      svg
+        .select('path')
+        .transition()
+        .duration(50)
+        .attr('transform-origin', `${posX}% ${posY}%`)
+        .attr('transform', `scale(${scale})`);
+    });
+  </script>
+</html>
